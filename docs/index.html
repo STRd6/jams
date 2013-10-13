@@ -68,6 +68,8 @@ enemyNames = [
 
 <span class="function"><span class="title">Duder</span></span> = (I={}, self=Model(I)) -&gt;
   Object.defaults I,
+    active: <span class="literal">false</span>
+    enemy: <span class="literal">false</span>
     index: <span class="number">0</span>
     hp: <span class="number">3</span>
     hpMax: <span class="number">3</span>
@@ -77,13 +79,27 @@ enemyNames = [
   self.observeAll()
 
   self.<span class="function"><span class="title">click</span></span> = -&gt;
-    console.log self
+    <span class="keyword">if</span> I.enemy
+      <span class="keyword">if</span> activeDuder = guys.filter (guy) -&gt;
+        guy.active()
+      .first()
+        activeDuder.active(<span class="literal">false</span>)
+
+        self.hp(self.hp() - <span class="number">1</span>)
+
+    <span class="keyword">else</span>
+      self.activate()
+
+  self.<span class="function"><span class="title">activate</span></span> = -&gt;
+    guys.invoke <span class="string">"active"</span>, <span class="literal">false</span>
+    self.active(<span class="literal">true</span>)
 
   <span class="keyword">return</span> self
 
 opponents = [<span class="number">0.</span><span class="number">.2</span>].map (i) -&gt;
   Duder
     name: enemyNames[i]
+    enemy: <span class="literal">true</span>
 
 guys = []
 
