@@ -19,6 +19,8 @@
       self = Model(I);
     }
     Object.defaults(I, {
+      active: false,
+      enemy: false,
       index: 0,
       hp: 3,
       hpMax: 3
@@ -28,14 +30,29 @@
     }
     self.observeAll();
     self.click = function() {
-      return console.log(self);
+      var activeDuder;
+      if (I.enemy) {
+        if (activeDuder = guys.filter(function(guy) {
+          return guy.active();
+        }).first()) {
+          activeDuder.active(false);
+          return self.hp(self.hp() - 1);
+        }
+      } else {
+        return self.activate();
+      }
+    };
+    self.activate = function() {
+      guys.invoke("active", false);
+      return self.active(true);
     };
     return self;
   };
 
   opponents = [0, 1, 2].map(function(i) {
     return Duder({
-      name: enemyNames[i]
+      name: enemyNames[i],
+      enemy: true
     });
   });
 
