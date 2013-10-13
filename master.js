@@ -16,7 +16,7 @@
   };
 
   msg = function(msg) {
-    return events.push("" + msg + "\n");
+    return events(["" + msg + "\n"].concat(events()));
   };
 
   attack = function(from, to) {
@@ -62,18 +62,19 @@
           attack(activeDuder, self);
           if (opponent = opponents.filter(alive).first()) {
             if (target = guys.filter(alive).rand()) {
-              return attack(opponent, target);
-            } else {
-              return msg("You have been defeated!");
+              attack(opponent, target);
             }
-          } else {
-            return msg("Yo, you da winner!");
           }
         }
       } else {
         if (self.hp() > 0) {
-          return self.activate();
+          self.activate();
         }
+      }
+      if (opponents.filter(alive).length === 0) {
+        return msg("A winner is you!");
+      } else if (guys.filter(alive).length === 0) {
+        return msg("You have been defeated!");
       }
     };
     self.activate = function() {
