@@ -70,7 +70,7 @@ enemyNames = [
   o.I.hp &gt; <span class="number">0</span>
 
 <span class="function"><span class="title">msg</span></span> = (msg) -&gt;
-  events.push <span class="string">"<span class="subst">#{msg}</span>\n"</span>
+  events([<span class="string">"<span class="subst">#{msg}</span>\n"</span>].concat events())
 
 <span class="function"><span class="title">attack</span></span> = (from, to) -&gt;
   <span class="keyword">if</span> from <span class="keyword">and</span> to
@@ -110,14 +110,15 @@ enemyNames = [
         <span class="keyword">if</span> opponent = opponents.filter(alive).first()
           <span class="keyword">if</span> target = guys.filter(alive).rand()
             attack(opponent, target)
-          <span class="keyword">else</span>
-            msg <span class="string">"You have been defeated!"</span>
-        <span class="keyword">else</span>
-          msg <span class="string">"Yo, you da winner!"</span>
 
     <span class="keyword">else</span>
       <span class="keyword">if</span> self.hp() &gt; <span class="number">0</span>
         self.activate()
+
+    <span class="keyword">if</span> opponents.filter(alive).length <span class="keyword">is</span> <span class="number">0</span>
+      msg <span class="string">"A winner is you!"</span>
+    <span class="keyword">else</span> <span class="keyword">if</span> guys.filter(alive).length <span class="keyword">is</span> <span class="number">0</span>
+      msg <span class="string">"You have been defeated!"</span>
 
   self.<span class="function"><span class="title">activate</span></span> = -&gt;
     guys.invoke <span class="string">"active"</span>, <span class="literal">false</span>
