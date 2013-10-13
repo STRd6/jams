@@ -7,3 +7,7 @@
 .opponents
   - each @opponents, (duder) ->
     = game.render "duder", duder
+
+%pre.events
+  - each @events, (event) ->
+    = event
