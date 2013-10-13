@@ -49,25 +49,56 @@
               </div>
               
             </div>
-            <div class="content"><pre><code class="lang-coffeescript">templ = require <span class="string">"./duder_template"</span>
+            <div class="content"><pre><code class="lang-coffeescript">templates =
+  duder: require <span class="string">"./duder_template"</span>
+
+gameTemplate = require <span class="string">"./game_template"</span>
+
+names = [
+  <span class="string">"Carmack"</span>
+  <span class="string">"Romero"</span>
+  <span class="string">"Hall"</span>
+]
+
+enemyNames = [
+  <span class="string">"Rush"</span>
+  <span class="string">"Bjork"</span>
+  <span class="string">"Pantera"</span>
+]
 
 <span class="function"><span class="title">Duder</span></span> = (I={}, self=Model(I)) -&gt;
   Object.defaults I,
-    name: <span class="string">"Duder Jr."</span>
+    index: <span class="number">0</span>
     hp: <span class="number">3</span>
     hpMax: <span class="number">3</span>
 
+  I.name ?= names[I.index]
+
   self.observeAll()
+
+  self.<span class="function"><span class="title">click</span></span> = -&gt;
+    console.log self
 
   <span class="keyword">return</span> self
 
-guys = [
-  Duder()
-  Duder()
-  Duder()
-]
+opponents = [<span class="number">0.</span><span class="number">.2</span>].map (i) -&gt;
+  Duder
+    name: enemyNames[i]
 
-$(<span class="string">'body'</span>).append templ(guys[<span class="number">0</span>])</code></pre>
+guys = []
+
+guys = [<span class="number">0.</span><span class="number">.2</span>].map (i) -&gt;
+  Duder
+    index: i
+
+$(<span class="string">'body'</span>).append gameTemplate
+  duders: guys
+  opponents: opponents
+  render: (template, object) -&gt;
+    templates[template](object)
+
+$(<span class="string">'body'</span>).append $ <span class="string">"&lt;style&gt;"</span>,
+  text: require(<span class="string">'./style'</span>)</code></pre>
 </div>
         </li>
         
