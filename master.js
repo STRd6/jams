@@ -1,7 +1,15 @@
 (function() {
-  var Duder, guys, templ;
+  var Duder, enemyNames, gameTemplate, guys, names, opponents, templates;
 
-  templ = require("./duder_template");
+  templates = {
+    duder: require("./duder_template")
+  };
+
+  gameTemplate = require("./game_template");
+
+  names = ["Carmack", "Romero", "Hall"];
+
+  enemyNames = ["Rush", "Bjork", "Pantera"];
 
   Duder = function(I, self) {
     if (I == null) {
@@ -11,17 +19,45 @@
       self = Model(I);
     }
     Object.defaults(I, {
-      name: "Duder Jr.",
+      index: 0,
       hp: 3,
       hpMax: 3
     });
+    if (I.name == null) {
+      I.name = names[I.index];
+    }
     self.observeAll();
+    self.click = function() {
+      return console.log(self);
+    };
     return self;
   };
 
-  guys = [Duder(), Duder(), Duder()];
+  opponents = [0, 1, 2].map(function(i) {
+    return Duder({
+      name: enemyNames[i]
+    });
+  });
 
-  $('body').append(templ(guys[0]));
+  guys = [];
+
+  guys = [0, 1, 2].map(function(i) {
+    return Duder({
+      index: i
+    });
+  });
+
+  $('body').append(gameTemplate({
+    duders: guys,
+    opponents: opponents,
+    render: function(template, object) {
+      return templates[template](object);
+    }
+  }));
+
+  $('body').append($("<style>", {
+    text: require('./style')
+  }));
 
 }).call(this);
 
