@@ -1,0 +1,9 @@
+- game = this
+
+.team
+  - each @duders, (duder) ->
+    = game.render "duder", duder
+
+.opponents
+  - each @opponents, (duder) ->
+    = game.render "duder", duder

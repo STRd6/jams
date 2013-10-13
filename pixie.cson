@@ -5,3 +5,5 @@ remoteDependencies: [
   "http://strd6.github.io/tempest/javascripts/envweb.js"
   "http://strd6.github.io/require/v0.2.2.js"
 ]
+dependencies: 
+  runtime: "STRd6/runtime:v0.1.1"
