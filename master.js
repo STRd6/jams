@@ -1,5 +1,5 @@
 (function() {
-  var Duder, enemyNames, gameTemplate, guys, names, opponents, templates;
+  var Duder, alive, attack, enemyNames, events, gameTemplate, guys, msg, names, opponents, templates;
 
   templates = {
     duder: require("./duder_template")
@@ -10,6 +10,29 @@
   names = ["Carmack", "Romero", "Hall"];
 
   enemyNames = ["Rush", "Bjork", "Pantera"];
+
+  alive = function(o) {
+    return o.I.hp > 0;
+  };
+
+  msg = function(msg) {
+    return events.push("" + msg + "\n");
+  };
+
+  attack = function(from, to) {
+    var dmg;
+    if (from && to) {
+      dmg = [0, 1].map(function() {
+        return 1..d(6) > 1..d(6);
+      }).sum();
+      if (dmg > 0) {
+        msg("" + (from.name()) + " struck " + (to.name()) + " for " + dmg + "!");
+        return to.hp(to.hp() - dmg);
+      } else {
+        return msg("" + (from.name()) + " missed " + (to.name()));
+      }
+    }
+  };
 
   Duder = function(I, self) {
     if (I == null) {
@@ -30,16 +53,27 @@
     }
     self.observeAll();
     self.click = function() {
-      var activeDuder;
+      var activeDuder, opponent, target;
       if (I.enemy) {
         if (activeDuder = guys.filter(function(guy) {
           return guy.active();
         }).first()) {
           activeDuder.active(false);
-          return self.hp(self.hp() - 1);
+          attack(activeDuder, self);
+          if (opponent = opponents.filter(alive).first()) {
+            if (target = guys.filter(alive).rand()) {
+              return attack(opponent, target);
+            } else {
+              return msg("You have been defeated!");
+            }
+          } else {
+            return msg("Yo, you da winner!");
+          }
         }
       } else {
-        return self.activate();
+        if (self.hp() > 0) {
+          return self.activate();
+        }
       }
     };
     self.activate = function() {
@@ -64,12 +98,15 @@
     });
   });
 
+  events = Observable([]);
+
   $('body').append(gameTemplate({
     duders: guys,
     opponents: opponents,
     render: function(template, object) {
       return templates[template](object);
-    }
+    },
+    events: events
   }));
 
   $('body').append($("<style>", {
