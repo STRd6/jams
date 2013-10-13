@@ -66,6 +66,26 @@ enemyNames = [
   <span class="string">"Pantera"</span>
 ]
 
+<span class="function"><span class="title">alive</span></span> = (o) -&gt;
+  o.I.hp &gt; <span class="number">0</span>
+
+<span class="function"><span class="title">msg</span></span> = (msg) -&gt;
+  events.push <span class="string">"<span class="subst">#{msg}</span>\n"</span>
+
+<span class="function"><span class="title">attack</span></span> = (from, to) -&gt;
+  <span class="keyword">if</span> from <span class="keyword">and</span> to
+    dmg = [<span class="number">0.</span><span class="number">.1</span>].map -&gt;
+      <span class="number">1.</span>d(<span class="number">6</span>) &gt; <span class="number">1.</span>d(<span class="number">6</span>)
+    .sum()
+
+    <span class="keyword">if</span> dmg &gt; <span class="number">0</span>
+      msg <span class="string">"<span class="subst">#{from.name()}</span> struck <span class="subst">#{to.name()}</span> for <span class="subst">#{dmg}</span>!"</span>
+
+      to.hp(to.hp() - dmg)
+    <span class="keyword">else</span>
+      msg <span class="string">"<span class="subst">#{from.name()}</span> missed <span class="subst">#{to.name()}</span>"</span>
+
+
 <span class="function"><span class="title">Duder</span></span> = (I={}, self=Model(I)) -&gt;
   Object.defaults I,
     active: <span class="literal">false</span>
@@ -85,10 +105,19 @@ enemyNames = [
       .first()
         activeDuder.active(<span class="literal">false</span>)
 
-        self.hp(self.hp() - <span class="number">1</span>)
+        attack(activeDuder, self)
+
+        <span class="keyword">if</span> opponent = opponents.filter(alive).first()
+          <span class="keyword">if</span> target = guys.filter(alive).rand()
+            attack(opponent, target)
+          <span class="keyword">else</span>
+            msg <span class="string">"You have been defeated!"</span>
+        <span class="keyword">else</span>
+          msg <span class="string">"Yo, you da winner!"</span>
 
     <span class="keyword">else</span>
-      self.activate()
+      <span class="keyword">if</span> self.hp() &gt; <span class="number">0</span>
+        self.activate()
 
   self.<span class="function"><span class="title">activate</span></span> = -&gt;
     guys.invoke <span class="string">"active"</span>, <span class="literal">false</span>
@@ -107,11 +136,14 @@ guys = [<span class="number">0.</span><span class="number">.2</span>].map (i) -&
   Duder
     index: i
 
+events = Observable []
+
 $(<span class="string">'body'</span>).append gameTemplate
   duders: guys
   opponents: opponents
   render: (template, object) -&gt;
     templates[template](object)
+  events: events
 
 $(<span class="string">'body'</span>).append $ <span class="string">"&lt;style&gt;"</span>,
   text: require(<span class="string">'./style'</span>)</code></pre>
