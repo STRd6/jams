@@ -1,10 +1,14 @@
 - game = this
 
 .team
+  %p
+    Your Dudes
   - each @duders, (duder) ->
     = game.render "duder", duder
 
 .opponents
+  %p
+    The Enemies
   - each @opponents, (duder) ->
     = game.render "duder", duder
 
